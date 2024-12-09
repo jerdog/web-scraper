@@ -19,13 +19,17 @@ def fetch_page(url, session, referring_page=None):
                 "(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
             )
         }
-        response = session.get(url, headers=headers, allow_redirects=True)  # Use session for persistent headers and cookies
+          # Use session for persistent headers and cookies
+        response = session.get(url, headers=headers, allow_redirects=True)
         if response.history:
             print(f"Request to {url} was redirected to {response.url}")
         if response.status_code == 200:
             return response.text
         else:
-            logging.error(f"Failed to fetch {url}: Status {response.status_code}. Referring page: {referring_page}")
+            logging.error(
+                f"Failed to fetch {url}: Status {response.status_code}. "
+                f"Referring page: {referring_page}"
+            )
     except Exception as e:
         logging.error(f"Error fetching {url}: {e}. Referring page: {referring_page}")
     return None
@@ -87,10 +91,18 @@ def load_config(file_path):
 
 # Main function
 def main():
-    parser = argparse.ArgumentParser(description="Web scraper to find pages with specific keywords.")
-    parser.add_argument('base_urls', nargs='*', help="Base URLs to start crawling from.")
-    parser.add_argument('-k', '--keywords', help="Comma-separated list of keywords to search for.")
-    parser.add_argument('-c', '--config', help="Path to a JSON configuration file containing base URLs and keywords.")
+    parser = argparse.ArgumentParser(
+        description="Web scraper to find pages with specific keywords.")
+    parser.add_argument('base_urls', nargs='*', help="Base URLs to start crawling from."
+    )
+    parser.add_argument(
+        '-k', '--keywords',
+        help="Comma-separated list of keywords to search for."
+    )
+    parser.add_argument(
+        '-c', '--config',
+        help="Path to a JSON configuration file containing base URLs and keywords."
+    )
     args = parser.parse_args()
 
     base_urls = []
