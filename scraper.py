@@ -1,18 +1,23 @@
-import requests
-from bs4 import BeautifulSoup
+"""
+This module provides a web scraper for crawling websites and extracting pages
+containing specific keywords.
+"""
+
 import re
 import csv
 import argparse
 import json
 import logging
+import requests
+from requests.exceptions import RequestException
+from bs4 import BeautifulSoup
 
 # Setup logging
-logging.basicConfig(filename="errors.log", level=logging.ERROR,
-                    format="%(asctime)s - %(levelname)s - %(message)s")
-
-"""
-A web scraper for crawling websites and extracting pages with specific keywords.
-"""
+logging.basicConfig(
+    filename="errors.log",
+    level=logging.ERROR,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 def fetch_page(url, session, referring_page=None):
     """
@@ -26,9 +31,6 @@ def fetch_page(url, session, referring_page=None):
     Returns:
         str: The HTML content of the page, or None if the fetch fails.
     """
-
-    from requests.exceptions import RequestException
-
     try:
         headers = {
             "User-Agent": (
@@ -36,7 +38,6 @@ def fetch_page(url, session, referring_page=None):
                 "(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
             )
         }
-        # Use session for persistent headers and cookies
         response = session.get(url, headers=headers, allow_redirects=True)
         if response.history:
             print(f"Request to {url} was redirected to {response.url}")
@@ -48,37 +49,35 @@ def fetch_page(url, session, referring_page=None):
 
     return None
 
-    from requests.exceptions import RequestException
-
-    try:
-        headers = {
-            "User-Agent": (
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                "(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-            )
-        }
-          # Use session for persistent headers and cookies
-        response = session.get(url, headers=headers, allow_redirects=True)
-        if response.history:
-            print(f"Request to {url} was redirected to {response.url}")
-        if response.status_code == 200:
-            return response.text
-        logging.error("Failed to fetch %s: Status %d", url, response.status_code)
-    except RequestException as e:
-        logging.error("Error fetching %s: %s. Referring page: %s", url, e, referring_page)
-
-    return None
-
-# A function to find keywords in a page
 def find_keywords(content, keywords):
+    """
+    Finds keywords in the HTML content of a page.
+
+    Args:
+        content (str): The HTML content of the page.
+        keywords (list): A list of keywords to search for.
+
+    Returns:
+        list: A list of keywords found in the content.
+    """
     found = []
     for keyword in keywords:
         if re.search(rf"\b{keyword}\b", content, re.IGNORECASE):
             found.append(keyword)
     return found
 
-# A function to recursively crawl pages
 def crawl_site(base_url, keywords, visited, results, session):
+    """
+    Recursively crawls a website starting from a base URL and finds pages
+    containing specific keywords.
+
+    Args:
+        base_url (str): The starting URL for crawling.
+        keywords (list): Keywords to search for.
+        visited (set): A set of already visited URLs.
+        results (list): A list to store results.
+        session (requests.Session): The HTTP session for persistent headers and cookies.
+    """
     to_visit = [base_url]
 
     while to_visit:
@@ -111,11 +110,19 @@ def crawl_site(base_url, keywords, visited, results, session):
                 href = base_url.rstrip("/") + "/" + href
             if href.startswith(base_url) and href not in visited:
                 if not fetch_page(href, session, referring_page=current_url):
-                    logging.error(f"Broken link found: {href}. Referring page: {current_url}")
+                    logging.error("Broken link found: %s. Referring page: %s", href, current_url)
                 to_visit.append(href)
 
-# Load configuration from a file
 def load_config(file_path):
+    """
+    Loads configuration data from a JSON file.
+
+    Args:
+        file_path (str): The path to the configuration file.
+
+    Returns:
+        tuple: A tuple containing a list of base URLs and a list of keywords.
+    """
     try:
         with open(file_path, 'r', encoding="utf-8") as file:
             config = json.load(file)
@@ -124,12 +131,14 @@ def load_config(file_path):
         logging.error("Error loading configuration file: %s", e)
         return [], []
 
-# Main function
 def main():
+    """
+    Main function to execute the web scraper.
+    """
     parser = argparse.ArgumentParser(
-        description="Web scraper to find pages with specific keywords.")
-    parser.add_argument('base_urls', nargs='*', help="Base URLs to start crawling from."
+        description="Web scraper to find pages with specific keywords."
     )
+    parser.add_argument('base_urls', nargs='*', help="Base URLs to start crawling from.")
     parser.add_argument(
         '-k', '--keywords',
         help="Comma-separated list of keywords to search for."
@@ -169,7 +178,7 @@ def main():
         "User-Agent": (
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
             "(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-            )
+        )
     })
 
     # Start crawling for each base URL
