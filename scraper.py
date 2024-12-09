@@ -7,14 +7,17 @@ import json
 import logging
 
 # Setup logging
-logging.basicConfig(filename="errors.log", level=logging.ERROR, 
+logging.basicConfig(filename="errors.log", level=logging.ERROR,
                     format="%(asctime)s - %(levelname)s - %(message)s")
 
 # A function to fetch and parse a page
 def fetch_page(url, session, referring_page=None):
     try:
         headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+            )
         }
         response = session.get(url, headers=headers, allow_redirects=True)  # Use session for persistent headers and cookies
         if response.history:
@@ -48,7 +51,7 @@ def crawl_site(base_url, keywords, visited, results, session):
         print(f"Crawling: {current_url}")
         visited.add(current_url)
         html_content = fetch_page(current_url, session, referring_page=None)
-        
+
         if not html_content:
             continue
 
@@ -116,7 +119,10 @@ def main():
     # Use requests.Session for persistent headers and cookies
     session = requests.Session()
     session.headers.update({
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+            )
     })
 
     # Start crawling for each base URL
