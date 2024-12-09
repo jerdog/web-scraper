@@ -2,7 +2,6 @@
 Unit tests for the web scraper module.
 """
 
-import pytest
 from unittest.mock import Mock
 from scraper import fetch_page
 
@@ -25,4 +24,6 @@ def test_fetch_page():
     result = fetch_page(mock_url, mock_session)
 
     # Validate the result
-    assert result == "<html><body>Example</body></html>", "fetch_page should return the HTML content"
+    assert result == "<html><body>Example</body></html>", (
+    "fetch_page should return the HTML content"
+    )
