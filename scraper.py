@@ -10,8 +10,46 @@ import logging
 logging.basicConfig(filename="errors.log", level=logging.ERROR,
                     format="%(asctime)s - %(levelname)s - %(message)s")
 
-# A function to fetch and parse a page
+"""
+A web scraper for crawling websites and extracting pages with specific keywords.
+"""
+
 def fetch_page(url, session, referring_page=None):
+    """
+    Fetches the HTML content of a given URL.
+
+    Args:
+        url (str): The URL to fetch.
+        session (requests.Session): The HTTP session for persistent headers and cookies.
+        referring_page (str, optional): The URL of the referring page.
+
+    Returns:
+        str: The HTML content of the page, or None if the fetch fails.
+    """
+
+    from requests.exceptions import RequestException
+
+    try:
+        headers = {
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+            )
+        }
+        # Use session for persistent headers and cookies
+        response = session.get(url, headers=headers, allow_redirects=True)
+        if response.history:
+            print(f"Request to {url} was redirected to {response.url}")
+        if response.status_code == 200:
+            return response.text
+        logging.error("Failed to fetch %s: Status %d", url, response.status_code)
+    except RequestException as e:
+        logging.error("Error fetching %s: %s. Referring page: %s", url, e, referring_page)
+
+    return None
+
+    from requests.exceptions import RequestException
+
     try:
         headers = {
             "User-Agent": (
@@ -25,13 +63,10 @@ def fetch_page(url, session, referring_page=None):
             print(f"Request to {url} was redirected to {response.url}")
         if response.status_code == 200:
             return response.text
-        else:
-            logging.error(
-                f"Failed to fetch {url}: Status {response.status_code}. "
-                f"Referring page: {referring_page}"
-            )
-    except Exception as e:
-        logging.error(f"Error fetching {url}: {e}. Referring page: {referring_page}")
+        logging.error("Failed to fetch %s: Status %d", url, response.status_code)
+    except RequestException as e:
+        logging.error("Error fetching %s: %s. Referring page: %s", url, e, referring_page)
+
     return None
 
 # A function to find keywords in a page
@@ -82,11 +117,11 @@ def crawl_site(base_url, keywords, visited, results, session):
 # Load configuration from a file
 def load_config(file_path):
     try:
-        with open(file_path, 'r') as file:
+        with open(file_path, 'r', encoding="utf-8") as file:
             config = json.load(file)
             return config.get("base_urls", []), config.get("keywords", [])
-    except Exception as e:
-        logging.error(f"Error loading configuration file: {e}")
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        logging.error("Error loading configuration file: %s", e)
         return [], []
 
 # Main function
