@@ -14,6 +14,7 @@ I built this Python-based web scraper to help identify pages on a website that c
 - Python 3.10+
 - `requests`
 - `beautifulsoup4`
+- `pytest`
 
 Install the dependencies with:
 ```bash
