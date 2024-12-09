@@ -2,6 +2,8 @@
 Unit tests for the web scraper module.
 """
 
+import pytest
+from unittest.mock import Mock
 from scraper import fetch_page
 
 def test_fetch_page():
@@ -10,10 +12,17 @@ def test_fetch_page():
     """
     # Mock inputs
     mock_url = "https://example.com"
-    mock_session = None  # Replace with an actual session object if needed
+    mock_session = Mock()
+
+    # Mock the response from session.get
+    mock_response = Mock()
+    mock_response.history = []  # No redirects
+    mock_response.status_code = 200
+    mock_response.text = "<html><body>Example</body></html>"
+    mock_session.get.return_value = mock_response
 
     # Call the function
     result = fetch_page(mock_url, mock_session)
 
-    # Validate the result (replace `None` with expected content if known)
-    assert result is not None, "fetch_page should return content for a valid URL"
+    # Validate the result
+    assert result == "<html><body>Example</body></html>", "fetch_page should return the HTML content"
