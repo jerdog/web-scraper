@@ -1,6 +1,6 @@
-# Custom Python Scraper
+# Python Web Scraper
 
-This project is a Python-based web scraper designed to identify pages on a website that contain specific keywords (e.g., product names). The scraper crawls through the site recursively, searches for occurrences of the keywords, and outputs the results to a CSV file.
+I built this Python-based web scraper to help identify pages on a website that contain specific keywords (e.g., product names). The scraper crawls through the site recursively, searches for occurrences of the keywords, and outputs the results to a CSV file. It also outputs  a list of broken links to a separate `errors.log` file.
 
 ## Features
 - Recursively crawls a website starting from a base URL.
@@ -33,8 +33,9 @@ The scraper supports two methods for providing the base URLs and keywords:
    ```
 
 2. **Configuration File**
-   - Create a JSON configuration file with `base_urls` and `keywords`.
-   - Copy the provided `config.json-example` file to `config.json` and edit it with your settings.
+   - Copy the provided `config.json-example` file to `config.json` and edit it with your settings, specifically:
+     - `base_urls`
+     - `keywords`
 
    Example `config.json`:
    ```json
@@ -56,13 +57,13 @@ The scraper supports two methods for providing the base URLs and keywords:
    ```
 
 ## Logging
-The scraper logs errors and broken links to an `errors.log` file, capturing details such as the URL that failed to load and the referring page. This feature helps debug issues during the crawling process.
+The scraper logs errors and broken links to an `errors.log` file, capturing details such as the URL that failed to load and the referring page.
 
 ## Usage
-1. Clone this repository:
+1. [Fork](https://github.com/jerdog/web-scraper/fork) and Clone this repository:
    ```bash
    git clone <repository_url>
-   cd custom_scraper_project
+   cd web-scraper
    ```
 2. Activate your virtual environment:
    ```bash
