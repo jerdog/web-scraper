@@ -1,0 +1,11 @@
+{
+    "base_urls": [
+        "https://example.com",
+        "https://another-example.com"
+    ],
+    "keywords": [
+        "ProductName1",
+        "ProductName2",
+        "Keyword3"
+    ]
+}

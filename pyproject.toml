@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Custom_Web_Scraper"
+version = "0.1.0"
+description = "A web scraper for finding pages with specific keywords."
+authors = [
+    { name = "Jeremy Meiss", email = "jeremy.meiss@gmail.com" }
+]
+license = { text = "MIT" }
+requires-python = ">=3.10"
+
+[project.dependencies]
+requests = "*"
+beautifulsoup4 = "*"
